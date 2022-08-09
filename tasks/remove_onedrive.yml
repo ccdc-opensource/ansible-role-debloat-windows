@@ -1,0 +1,92 @@
+---
+- name: Kill OneDrive processes
+  when: remove_onedrive
+  ansible.windows.win_shell: |
+    Stop-Process -Name "OneDrive" -Force
+    Stop-Process -Name "explorer" -Force
+
+- name: Find OneDrive installer
+  when: remove_onedrive
+  ansible.windows.win_find:
+    paths:
+      - "{{ ansible_env.SystemRoot }}\\System32"
+      - "{{ ansible_env.SystemRoot }}\\SysWOW64"
+    patterns: "OneDriveSetup.exe"
+  register: onedrive_installer
+
+- name: Uninstall OneDrive
+  when: remove_onedrive
+  ansible.windows.win_shell: "{{ installer.path }} /uninstall"
+  loop: "{{ onedrive_installer.files }}"
+  loop_control:
+    loop_var: installer
+
+- name: Remove leftover directories
+  when: remove_onedrive
+  ansible.windows.win_file:
+    path: "{{ directory }}"
+    state: absent
+  loop:
+    - "{{ ansible_env.LOCALAPPDATA }}\\Microsoft\\OneDrive"
+    - "{{ ansible_env.ProgramData }}\\Microsoft OneDrive"
+    - "{{ ansible_env.SystemDrive }}\\OneDriveTemp"
+    - "{{ ansible_env.USERPROFILE }}\\OneDrive"
+  loop_control:
+    loop_var: directory
+
+- name: Disable OneDrive via group policies
+  when: remove_onedrive
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive
+    value: DisableFileSyncNGSC
+    data: 1
+    type: dword
+
+- name: Remove OneDrive from Explorer sidebar
+  when: remove_onedrive
+  ansible.windows.win_regedit:
+    path: "{{ path }}"
+    value: System.IsPinnedToNameSpaceTree
+    data: 0
+    type: dword
+  loop:
+    - HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
+    - HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}
+  loop_control:
+    loop_var: path
+
+- name: Create PowerShell drive for accessing HKEY_USERS
+  when: remove_onedrive
+  ansible.windows.win_shell: New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS
+
+- name: Remove OneDrive setup hook for new users
+  when: remove_onedrive
+  ansible.windows.win_regedit:
+    path: HKU:\.Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+    value: OneDriveSetup
+    state: absent
+
+- name: Remove OneDrive start menu entry
+  when: remove_onedrive
+  ansible.windows.win_file:
+    path: "{{ ansible_env.USERPROFILE }}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\OneDrive.lnk"
+    state: absent
+
+- name: Get any OneDrive scheduled tasks
+  when: remove_onedrive
+  community.windows.win_scheduled_task_stat:
+  register: scheduled_task_stat
+
+- name: Remove OneDrive scheduled task
+  when: remove_onedrive and task_name is match("OneDrive.*")
+  community.windows.win_scheduled_task:
+    name: "{{ task_name }}"
+    path: "\\Microsoft\\Windows\\Windows Defender"
+    state: absent
+  loop: "{{ scheduled_task_stat.folder_task_names }}"
+  loop_control:
+    loop_var: task_name
+
+- name: Restart Explorer
+  when: remove_onedrive
+  ansible.windows.win_shell: Start-Process "explorer.exe"

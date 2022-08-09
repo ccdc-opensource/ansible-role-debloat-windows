@@ -1,0 +1,44 @@
+---
+name: Ansible Lint
+on: # yamllint disable-line rule:truthy
+  - pull_request
+  - push
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Determine reporter type
+        run: |
+          if [ $GITHUB_EVENT_NAME != "pull_request" ]; then
+              echo "REVIEWDOG_REPORTER=github-check" >> $GITHUB_ENV
+          else
+              echo "REVIEWDOG_REPORTER=github-pr-review" >> $GITHUB_ENV
+          fi
+
+      - name: Run ansible-lint
+        uses: reviewdog/action-ansiblelint@v1
+        with:
+          fail_on_error: true
+          filter_mode: nofilter
+          level: info
+          reporter: ${{ env.REVIEWDOG_REPORTER }}
+
+      - name: Run yamllint
+        uses: reviewdog/action-yamllint@v1
+        with:
+          fail_on_error: true
+          filter_mode: nofilter
+          level: info
+          reporter: ${{ env.REVIEWDOG_REPORTER }}
+
+      - name: Run markdownlint
+        uses: reviewdog/action-markdownlint@v0
+        with:
+          fail_on_error: true
+          filter_mode: nofilter
+          level: info
+          reporter: ${{ env.REVIEWDOG_REPORTER }}

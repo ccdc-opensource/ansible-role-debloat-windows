@@ -1,0 +1,219 @@
+---
+
+- name: "Disable Windows Search web results"
+  when: disable_search_web_results
+  ansible.windows.win_shell: Set-WindowsSearchSetting -EnableWebResultsSetting $false
+
+- name: Disable web language list access
+  when: disable_web_language_list_access
+  ansible.windows.win_regedit:
+    path: HKCU:\Control Panel\International\User Profile
+    name: HttpAcceptLanguageOptOut
+    data: 1
+    type: dword
+
+- name: Disable location aware printing
+  when: disable_location_aware_printing
+  ansible.windows.win_regedit:
+    path: HKCU:\Printers\Defaults
+    name: NetID
+    data: {00000000-0000-0000-0000-000000000000}
+    type: string
+
+- name: Disable keyboard telemetry
+  when: disable_keyboard_telemetry
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Input\TIPC
+    name: Enabled
+    data: 0
+    type: dword
+
+- name: Disable advertising ID
+  when: disable_advertising_id
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo
+    name: Enabled
+    data: 0
+    type: dword
+
+- name: Disable SmartScreen web filter
+  when: disable_smartscreen_web_filter
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost
+    name: EnableWebContentEvaluation
+    data: 0
+    type: dword
+
+- name: Disable Microsoft Account settings sync
+  when: disable_microsoft_account_settings_sync
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync
+    name: "{{ feature.key }}"
+    data: "{{ feature.value }}"
+    type: dword
+  loop:
+    - key: BackupPolicy
+      value: 0x3c
+    - key: DeviceMetadataUploaded
+      value: 0
+    - key: PriorLogons
+      value: 1
+  loop_control:
+    loop_var: feature
+
+- name: Disable Microsoft Account settings sync for feature groups
+  when: disable_microsoft_account_settings_sync
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\{{ group }}
+    name: Enabled
+    data: 0
+    type: dword
+  loop_control:
+    loop_var: group
+  loop:
+    - Accessibility
+    - AppSync
+    - BrowserSettings
+    - Credentials
+    - DesktopTheme
+    - Language
+    - PackageState
+    - Personalization
+    - StartLayout
+    - Windows
+
+# Prevents sending speech, inking and typing samples to MS (so Cortana
+# can learn to recognise you)
+- name: Set privacy policy to not accepted
+  when: disable_cortana_personalization
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Personalization\Settings
+    name: AcceptedPrivacyPolicy
+    data: 0
+    type: dword
+
+- name: Disable contact harvesting
+  when: disable_contact_harvesting
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore
+    name: HarvestContacts
+    data: 0
+    type: dword
+
+- name: Disable input personalization
+  when: disable_input_personalization
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\InputPersonalization
+    name: "{{ value }}"
+    data: 1
+    type: dword
+  loop_control:
+    loop_var: value
+  loop:
+    - RestrictImplicitInkCollection
+    - RestrictImplicitTextCollection
+
+- name: Harden Microsoft Edge
+  when: harden_microsoft_edge
+  ansible.windows.win_regedit:
+    path: "HKCU:\\SOFTWARE\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\CurrentVersion\
+      \\AppContainer\\Storage\\microsoft.microsoftedge_8wekyb3d8bbwe\\MicrosoftEdge\\{{ key.path }}"
+    name: "{{ key.value }}"
+    data: "{{ key.data }}"
+    type: dword
+  loop_control:
+    loop_var: key
+  loop:
+    - path: Main
+      value: DoNotTrack
+      data: 0
+    - path: User\Default\SearchScopes
+      value: ShowSearchSuggestionsGlobal
+      data: 0
+    - path: FlipAhead
+      value: FPEnabled
+      data: 0
+    - path: PhishingFilter
+      value: EnabledV9
+      data: 0
+
+- name: Disable location sensor
+  when: disable_location_sensor
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Permissions\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}
+    name: SensorPermissionState
+    data: 0
+    type: dword
+
+- name: Disable Windows Defender sample submission
+  become: true
+  when: disable_windows_defender_sample_submission
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows Defender\Spynet
+    name: SubmitSamplesConsent
+    data: 0
+    type: dword
+
+- name: Get list of default apps requesting Background Access permission
+  when: disable_default_background_access
+  ansible.windows.win_reg_stat:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications
+  register: background_access_applications
+
+- name: Disable Background Access for default apps
+  when: disable_default_background_access
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications\{{ application }}
+    name: Disabled
+    data: 1
+    type: dword
+  loop: "{{ background_access_applications.sub_keys }}"
+  loop_control:
+    loop_var: application
+
+- name: "Disable unpaired device information sharing: Set Type for LooselyCoupled"
+  when: disable_unpaired_information_sharing
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\LooselyCoupled
+    name: Type
+    data: LooselyCoupled
+    type: string
+
+- name: Get list of known pairable devices
+  when: disable_unpaired_information_sharing
+  ansible.windows.win_reg_stat:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global
+  register: pairable_devices
+
+- name: Disable unpaired device information sharing
+  when: disable_unpaired_information_sharing
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{{ subkey }}
+    name: Value
+    data: Deny
+    type: string
+  loop: "{{ pairable_devices.sub_keys }}"
+  loop_control:
+    loop_var: subkey
+
+- name: "Disable unpaired device information sharing: Set Type"
+  when: disable_unpaired_information_sharing and subkey != "LooselyCoupled"
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{{ subkey }}
+    name: Type
+    data: InterfaceClass
+    type: string
+  loop: "{{ pairable_devices.sub_keys }}"
+  loop_control:
+    loop_var: subkey
+
+- name: "Disable unpaired device information sharing: Set InitialAppValue"
+  when: disable_unpaired_information_sharing
+  ansible.windows.win_regedit:
+    path: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{{ subkey }}
+    name: InitialAppValue
+    data: Unspecified
+    type: string
+  loop: "{{ pairable_devices.sub_keys }}"
+  loop_control:
+    loop_var: subkey

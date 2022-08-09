@@ -1,0 +1,225 @@
+---
+# Disable Telemetry
+disable_telemetry_policy: true
+disable_telemetry_dnsblock: true
+
+# Remove OneDrive
+remove_onedrive: true
+
+# Disable hibernate
+disable_hibernate: true
+
+# Disable Services
+disable_services:
+  - "diagnosticshub.standardcollector.service" # Microsoft (R) Diagnostics Hub Standard Collector Service
+  - "DiagTrack"                                # Diagnostics Tracking Service
+  - "dmwappushservice"                         # WAP Push Message Routing Service
+  - "HomeGroupListener"                        # HomeGroup Listener
+  - "HomeGroupProvider"                        # HomeGroup Provider
+  - "lfsvc"                                    # Geolocation Service
+  - "MapsBroker"                               # Downloaded Maps Manager
+  - "NetTcpPortSharing"                        # Net.Tcp Port Sharing Service
+  - "RemoteAccess"                             # Routing and Remote Access
+  - "RemoteRegistry"                           # Remote Registry
+  - "SharedAccess"                             # Internet Connection Sharing (ICS)
+  - "TrkWks"                                   # Distributed Link Tracking Client
+  - "WbioSrvc"                                 # Windows Biometric Service
+  - "WMPNetworkSvc"                            # Windows Media Player Network Sharing Service
+  # - "wscsvc"                                   # Windows Security Center Service
+  - "XblAuthManager"                           # Xbox Live Auth Manager
+  - "XblGameSave"                              # Xbox Live Game Save Service
+  - "XboxNetApiSvc"                            # Xbox Live Networking Service
+
+remove_windows_capabilities:
+  - Media.WindowsMediaPlayer~~~~0.0.12.0
+  - MathRecognizer~~~~0.0.1.0
+  - Language.Speech~~~en-US~0.0.1.0
+  - Language.OCR~~~en-US~0.0.1.0
+  - Language.Handwriting~~~en-US~0.0.1.0
+  - Browser.InternetExplorer~~~~0.0.11.0
+remove_windows_optional_features:
+  - Printing-Foundation-Features
+  - XPS-Viewer
+  - Windows-Defender
+  - WindowsMediaPlayer
+  - Windows-Defender-Default-Definitions
+  - Internet-Explorer-Optional-amd64
+
+# Disable Windows Defender
+disable_windows_defender_tasks: true
+disable_windows_defender_policy: true
+disable_windows_defender_context_menu: true
+
+# Setup UI
+disable_mouse_pointer_hiding: true
+disable_game_bar: true
+disable_keyboard_accessibility: true
+disable_screensaver: true
+disable_display_timeout: true
+disable_edge_shortcut: true
+restore_old_volume_slider: true
+disable_aero_shake: true
+set_explorer_default_this_pc: true
+set_folder_view_options: true
+enable_quickedit: true
+show_run: true
+show_admin_tools: true
+library_folders:
+  - "{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}"    # Desktop
+  - "{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}"    # Documents
+  - "{d3162b92-9365-467a-956b-92703aca08af}"    # Documents
+  - "{374DE290-123F-4565-9164-39C4925E467B}"    # Downloads
+  - "{088e3905-0323-4b02-9826-5d99428e115f}"    # Downloads
+  - "{1CF1260C-4DD0-4ebb-811F-33C572699FDE}"    # Music
+  - "{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}"    # Music
+  - "{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}"    # Pictures
+  - "{24ad3ad4-a569-4530-98e1-ab02f9417aa8}"    # Pictures
+  - "{A0953C92-50DC-43bf-BE83-3742FED03C9C}"    # Videos
+  - "{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}"    # Videos
+  - "{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"    # 3D Objects
+
+# Privacy settings
+disable_search_web_results: true
+disable_web_language_list_access: true
+disable_location_aware_printing: true
+disable_keyboard_telemetry: true
+disable_advertising_id: true
+disable_smartscreen_web_filter: true
+disable_microsoft_account_settings_sync: true
+disable_cortana_personalization: true
+disable_contact_harvesting: true
+disable_input_personalization: true
+harden_microsoft_edge: true
+disable_location_sensor: true
+disable_windows_defender_sample_submission: true
+disable_default_background_access: true
+disable_unpaired_information_sharing: true
+
+# Windows Update settings
+disable_autoupdate: true
+disable_delivery_optimization: true
+disable_driver_updates: false
+disable_update_notification: true
+disable_windows_update: true
+
+# Default apps removal
+disable_default_app_reinstall: true
+disable_windows_store_autodownload: true
+disable_app_suggestions: true
+remove_default_apps:
+  # default Windows 10 apps
+  - name: "Microsoft.549981C3F5F10"   # Cortana
+  - name: "Microsoft.3DBuilder"
+  - name: "Microsoft.Appconnector"
+  - name: "Microsoft.BingFinance"
+  - name: "Microsoft.BingNews"
+  - name: "Microsoft.BingSports"
+  - name: "Microsoft.BingTranslator"
+  - name: "Microsoft.BingWeather"
+  - name: "Microsoft.FreshPaint"
+  - name: "Microsoft.GamingServices"
+  - name: "Microsoft.Microsoft3DViewer"
+  - name: "Microsoft.MicrosoftOfficeHub"
+  - name: "Microsoft.MicrosoftPowerBIForWindows"
+  - name: "Microsoft.MicrosoftSolitaireCollection"
+  - name: "Microsoft.MicrosoftStickyNotes"
+  - name: "Microsoft.MinecraftUWP"
+  - name: "Microsoft.MSPaint"
+  - name: "Microsoft.NetworkSpeedTest"
+  - name: "Microsoft.Office.OneNote"
+  - name: "Microsoft.People"
+  - name: "Microsoft.Print3D"
+  - name: "Microsoft.Services.Store.Engagement"
+  - name: "Microsoft.SkypeApp"
+  - name: "Microsoft.StorePurchaseApp"
+  - name: "Microsoft.Wallet"
+  - name: "Microsoft.Windows.Photos"
+  - name: "Microsoft.WindowsAlarms"
+  - name: "Microsoft.WindowsCamera"
+  - name: "Microsoft.WindowsCalculator"
+  - name: "microsoft.windowscommunicationsapps"
+  - name: "Microsoft.WindowsFeedbackHub"
+  - name: "Microsoft.WindowsMaps"
+  - name: "Microsoft.WindowsPhone"
+  - name: "Microsoft.WindowsSoundRecorder"
+  - name: "Microsoft.WindowsStore"
+  - name: "Microsoft.Xbox.TCUI"
+  - name: "Microsoft.XboxApp"
+  - name: "Microsoft.XboxGameOverlay"
+  - name: "Microsoft.XboxGamingOverlay"
+  - name: "Microsoft.XboxIdentityProvider"
+  - name: "Microsoft.XboxSpeechToTextOverlay"
+  - name: "Microsoft.YourPhone"
+  - name: "Microsoft.ZuneMusic"
+  - name: "Microsoft.ZuneVideo"
+  # Threshold 2 apps
+  - name: "Microsoft.CommsPhone"
+  - name: "Microsoft.ConnectivityStore"
+  - name: "Microsoft.GetHelp"
+  - name: "Microsoft.Getstarted"
+  - name: "Microsoft.Messaging"
+  - name: "Microsoft.Office.Sway"
+  - name: "Microsoft.OneConnect"
+  - name: "Microsoft.WindowsFeedbackHub"
+  - name: "Microsoft.Microsoft3DViewer"
+  # Redstone apps
+  - name: "Microsoft.BingFoodAndDrink"
+  - name: "Microsoft.BingHealthAndFitness"
+  - name: "Microsoft.BingTravel"
+  - name: "Microsoft.WindowsReadingList"
+  # Redstone 5 apps
+  - name: "Microsoft.MixedReality.Portal"
+  - name: "Microsoft.ScreenSketch"
+  - name: "Microsoft.XboxGamingOverlay"
+  # Windows 11 apps
+  - name: "Microsoft.GamingApp"
+  - name: "Microsoft.PowerAutomateDesktop"
+  - name: "MicrosoftTeams"
+  - name: "Microsoft.Todos"
+  # These two cannot be removed in Windows 11 Enterprise.
+  # - name: "Microsoft.XboxGameCallableUI"
+  #   requires_admin: true
+  # - name: "Microsoft.Windows.ParentalControls"
+  #   requires_admin: true
+  # non-Microsoft
+  - name: "2FE3CB00.PicsArt-PhotoStudio"
+  - name: "46928bounde.EclipseManager"
+  - name: "4DF9E0F8.Netflix"
+  - name: "613EBCEA.PolarrPhotoEditorAcademicEdition"
+  - name: "6Wunderkinder.Wunderlist"
+  - name: "7EE7776C.LinkedInforWindows"
+  - name: "89006A2E.AutodeskSketchBook"
+  - name: "9E2F88E3.Twitter"
+  - name: "A278AB0D.DisneyMagicKingdoms"
+  - name: "A278AB0D.MarchofEmpires"
+  - name: "ActiproSoftwareLLC.562882FEEB491"
+  - name: "CAF9E577.Plex"
+  - name: "ClearChannelRadioDigital.iHeartRadio"
+  - name: "D52A8D61.FarmVille2CountryEscape"
+  - name: "D5EA27B7.Duolingo-LearnLanguagesforFree"
+  - name: "DB6EA5DB.CyberLinkMediaSuiteEssentials"
+  - name: "DolbyLaboratories.DolbyAccess"
+  - name: "DolbyLaboratories.DolbyAccess"
+  - name: "Drawboard.DrawboardPDF"
+  - name: "Facebook.Facebook"
+  - name: "Fitbit.FitbitCoach"
+  - name: "Flipboard.Flipboard"
+  - name: "GAMELOFTSA.Asphalt8Airborne"
+  - name: "KeeperSecurityInc.Keeper"
+  - name: "NORDCURRENT.COOKINGFEVER"
+  - name: "PandoraMediaInc.29680B314EFC2"
+  - name: "Playtika.CaesarsSlotsFreeCasino"
+  - name: "ShazamEntertainmentLtd.Shazam"
+  - name: "SlingTVLLC.SlingTV"
+  - name: "SpotifyAB.SpotifyMusic"
+  - name: "TheNewYorkTimes.NYTCrossword"
+  - name: "ThumbmunkeysLtd.PhototasticCollage"
+  - name: "TuneIn.TuneInRadio"
+  - name: "WinZipComputing.WinZipUniversal"
+  - name: "XINGAG.XING"
+  - name: "flaregamesGmbH.RoyalRevolt2"
+  - name: "king.com.*"
+  - name: "king.com.BubbleWitch3Saga"
+  - name: "king.com.CandyCrushSaga"
+  - name: "king.com.CandyCrushSodaSaga"
+  - name: "Microsoft.Advertising.Xaml"

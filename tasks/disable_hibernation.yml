@@ -1,0 +1,16 @@
+---
+- name: Set hibernation file size to zero
+  when: disable_hibernate
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Power
+    name: HibernateFileSizePercent
+    value: 0
+    type: dword
+
+- name: Disable hibernation mode
+  when: disable_hibernate
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Power
+    name: HibernateEnabled
+    value: 0
+    type: dword
