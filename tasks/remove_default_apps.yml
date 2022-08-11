@@ -1,0 +1,75 @@
+---
+- name: Remove default Windows apps
+  ansible.windows.win_package:
+    provider: msix
+    product_id: "{{ package.name }}"
+    state: absent
+  loop: "{{ remove_default_apps }}"
+  loop_control:
+    loop_var: package
+  become: "{{ package.requires_admin is defined and package.requires_admin }}"
+
+- name: Get full names of Windows Capabilities to remove
+  when: ansible_facts.os_installation_type == "Server"
+  ansible.windows.win_shell: |
+    Get-WindowsCapability -Online -Name "{{ capability }}" | `
+    ForEach-Object { Write-Host $_.Name }
+  loop: "{{ remove_windows_capabilities | sort }}"
+  loop_control:
+    loop_var: capability
+  register: feature_info
+
+- name: Remove Windows Capabilities
+  when: ansible_facts.os_installation_type == "Server"
+  ansible.windows.win_shell: |
+    Remove-WindowsCapability -Online -Name "{{ capability | trim }}"
+  loop: "{{ feature_info.results | map(attribute='stdout') }}"
+  loop_control:
+    loop_var: capability
+
+- name: Remove Windows optional features
+  ansible.windows.win_optional_feature:
+    state: absent
+    name: "{{ remove_windows_optional_features | sort }}"
+  register: result
+  failed_when: false
+
+- name: Disable reinstallation of default apps
+  when: disable_default_app_reinstall
+  ansible.windows.win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager
+    value: "{{ key }}"
+    data: 0
+    type: dword
+  loop:
+    - ContentDeliveryAllowed
+    - FeatureManagementEnabled
+    - OemPreInstalledAppsEnabled
+    - PreInstalledAppsEnabled
+    - PreInstalledAppsEverEnabled
+    - SilentInstalledAppsEnabled
+    - SubscribedContent-314559Enabled
+    - SubscribedContent-338387Enabled
+    - SubscribedContent-338388Enabled
+    - SubscribedContent-338389Enabled
+    - SubscribedContent-338393Enabled
+    - SubscribedContentEnabled
+    - SystemPaneSuggestionsEnabled
+  loop_control:
+    loop_var: key
+
+- name: Disable Windows Store auto-download
+  when: disable_windows_store_autodownload
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore
+    value: AutoDownload
+    data: 2
+    type: dword
+
+- name: Disable "Suggested Applications"
+  when: disable_app_suggestions
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent
+    value: DisableWindowsConsumerFeatures
+    data: 1
+    type: dword

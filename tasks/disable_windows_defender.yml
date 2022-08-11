@@ -1,0 +1,69 @@
+---
+- name: Disable Windows Defender scheduled tasks
+  when: disable_windows_defender_tasks
+  community.windows.win_scheduled_task:
+    name: "{{ task_name }}"
+    path: \Microsoft\Windows\Windows Defender
+    enabled: false
+  loop:
+    - Windows Defender Cache Maintenance
+    - Windows Defender Cleanup
+    - Windows Defender Scheduled Scan
+    - Windows Defender Verification
+  loop_control:
+    loop_var: task_name
+
+- name: Disable Windows Defender via group policy
+  when: disable_windows_defender_policy
+  ansible.windows.win_regedit:
+    path: "{{ option.path }}"
+    name: "{{ option.key }}"
+    data: "{{ option.value }}"
+    type: dword
+  loop_control:
+    loop_var: option
+  loop:
+    - path: HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows Defender
+      key: DisableAntiSpyware
+      value: 1
+    - path: HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows Defender
+      key: DisableRoutinelyTakingAction
+      value: 1
+    - path: HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows Defender\Real-Time Protection
+      key: DisableRealtimeMonitoring
+      value: 1
+    # - path: "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\WdNisSvc"
+    #   key: Start
+    #   value: 4
+    # - path: "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\WdNisSvc"
+    #   key: AutorunsDisabled
+    #   value: 3
+    # - path: "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\WinDefend"
+    #   key: Start
+    #   value: 4
+    # - path: "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\WinDefend"
+    #   key: AutorunsDisabled
+    #   value: 3
+    - path: "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Sense"
+      key: Start
+      value: 4
+    - path: "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Sense"
+      key: AutorunsDisabled
+      value: 3
+
+- name: Disable Windows Defender shell integration
+  when: disable_windows_defender_context_menu
+  ansible.windows.win_regedit:
+    path: "{{ option.path }}"
+    name: "{{ option.key }}"
+    state: absent
+    delete_key: "{{ option.delete_key }}"
+  loop_control:
+    loop_var: option
+  loop:
+    - path: HKLM:\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32
+      key: ""
+      delete_key: false
+    - path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+      key: "WindowsDefender"
+      delete_key: true

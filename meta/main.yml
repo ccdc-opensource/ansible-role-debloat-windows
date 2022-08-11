@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: debloat_windows
+  namespace: ccdc
+  author: florianpiesche
+  description: A role to debloat Windows
+  company: The Cambridge Crystallographic Data Centre
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.9
+
+  # Provide a list of supported platforms, and for each platform a list of versions.
+  # If you don't wish to enumerate all versions for a particular platform, use 'all'.
+  # To view available platforms and versions (or releases), visit:
+  # https://galaxy.ansible.com/api/v1/platforms/
+  #
+  platforms:
+    - name: Windows
+      versions:
+        - all
+  galaxy_tags:
+    - ccdc
+
+dependencies: []

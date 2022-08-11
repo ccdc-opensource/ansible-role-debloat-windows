@@ -1,0 +1,13 @@
+---
+- name: Check if {{ service }} is installed
+  ansible.windows.win_service_info:
+    name: "{{ service }}"
+  register: service_info
+
+- name: Disable {{ service }} service
+  ansible.windows.win_service:
+    name: "{{ service }}"
+    state: stopped
+    start_mode: disabled
+  when: service_info.exists
+  become: true

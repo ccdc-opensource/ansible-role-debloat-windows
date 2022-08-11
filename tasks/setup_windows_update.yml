@@ -1,0 +1,59 @@
+---
+
+- name: Disable automatic download and installation of Windows updates
+  when: disable_autoupdate
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\WindowsUpdate\AU
+    name: "{{ feature.name }}"
+    data: "{{ feature.value }}"
+    type: dword
+  loop:
+    - name: NoAutoUpdate
+      value: 1
+    - name: AUOptions
+      value: 2
+    - name: ScheduledInstallDay
+      value: 0
+    - name: ScheduledInstallTime
+      value: 3
+  loop_control:
+    loop_var: feature
+
+- name: Disable seeding of updates to other computers
+  when: disable_delivery_optimization
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization
+    name: DODownloadMode
+    data: 0
+    type: dword
+
+- name: Disable automatic driver updates
+  when: disable_driver_updates
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching
+    name: SearchOrderConfig
+    data: 0
+    type: dword
+
+- name: Disable update notification
+  when: disable_update_notification
+  ansible.windows.win_shell: |
+    $objSID = New-Object System.Security.Principal.SecurityIdentifier "S-1-1-0"
+    $EveryOne = $objSID.Translate( [System.Security.Principal.NTAccount]).Value
+    takeown /F "$env:WinDIR\\System32\\MusNotification.exe"
+    icacls "$env:WinDIR\\System32\\MusNotification.exe" /deny "$($EveryOne):(X)"
+    takeown /F "$env:WinDIR\\System32\\MusNotificationUx.exe"
+    icacls "$env:WinDIR\\System32\\MusNotificationUx.exe" /deny "$($EveryOne):(X)"
+
+- name: Disable Windows Update service
+  when: disable_windows_update
+  ansible.windows.win_service:
+    name: wuauserv
+    state: stopped
+    start_mode: disabled
+
+- name: Remove WSUS server settings
+  when: disable_windows_update
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
+    state: absent
