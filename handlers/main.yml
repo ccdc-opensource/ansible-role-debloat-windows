@@ -1,0 +1,6 @@
+---
+- name: Kill explorer
+  community.windows.win_wait_for_process:
+    process_name_exact: 'explorer'
+    state: absent
+    timeout: 500
