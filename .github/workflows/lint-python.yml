@@ -15,7 +15,7 @@ jobs:
         python_version: ["3.9"]
 
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4 (NO_JIRA)
         with:
           fetch-depth: 0
 
