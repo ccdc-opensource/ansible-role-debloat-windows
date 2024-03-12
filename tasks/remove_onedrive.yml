@@ -1,9 +1,11 @@
 ---
 - name: Kill OneDrive processes
   when: remove_onedrive
-  ansible.windows.win_shell: |
-    Stop-Process -Name "OneDrive" -Force
-    Stop-Process -Name "explorer" -Force
+  community.windows.win_wait_for_process:
+    process_name_exact: 'OneDrive'
+    state: absent
+    timeout: 500
+  notify: "Kill explorer"
 
 - name: Find OneDrive installer
   when: remove_onedrive
