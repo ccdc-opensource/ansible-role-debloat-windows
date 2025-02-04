@@ -1,0 +1,29 @@
+---
+
+name: renovate
+on:
+  schedule:
+    - cron: '12 */6 * * *'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    container: ghcr.io/renovatebot/renovate:39
+    timeout-minutes: 5
+    steps:
+
+      - name: Checkout
+        uses: https://github.com/actions/checkout@v3
+
+      - name: Renovate
+        run: renovate ${{ env.GITHUB_REPOSITORY }}
+        env:
+          RENOVATE_CONFIG_FILE: ".forgejo/renovate-global.js"
+          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_AUTODISCOVER: 'false'
+          GITHUB_COM_TOKEN: ${{ secrets.GITHUB }}
+          LOG_LEVEL: "info"
