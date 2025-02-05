@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: https://code.forgejo.org/actions/forgejo-release@4d26949b75e208a9d85204fdd1d6685af0f876a8 # v2.5.1
+      - uses: https://code.forgejo.org/actions/forgejo-release@2eb5091236d5a822d32d628ef01d5592a64f96c5 # v2.5.0
         with:
           direction: upload
           url: https://git.zyria.de
