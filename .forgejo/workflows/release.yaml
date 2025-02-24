@@ -9,9 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: mkdir -p dist/release
+      - run: touch dist/release/NOASSETS
       - uses: https://code.forgejo.org/actions/forgejo-release@73ed2a76a27e2b2c697830654557476dcbfeaae0 # v2.5.3
         with:
           direction: upload
           url: https://git.zyria.de
-          release-dir: release
           token: ${{ secrets.ZYRIA_TOKEN }}
