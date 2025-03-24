@@ -22,7 +22,7 @@ jobs:
       - name: Run ansible-lint
         uses: reviewdog/action-ansiblelint@v1
         with:
-          fail_on_error: false
+          fail_level: none
           filter_mode: diff_context
           level: info
           reporter: ${{ env.REVIEWDOG_REPORTER }}
