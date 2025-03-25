@@ -1,0 +1,107 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-symlinks
+      # - id: check-yaml
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: double-quote-string-fixer
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: requirements-txt-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.16.1
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: '2.7.2'  # pick a git hash / tag to point to
+    hooks:
+      - id: editorconfig-checker
+        alias: ec
+  - repo: https://github.com/pryorda/dockerfilelint-precommit-hooks
+    rev: v0.1.0
+    hooks:
+      - id: dockerfilelint
+        stages: [pre-commit]
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.1
+    hooks:
+      - id: forbid-crlf
+      - id: remove-crlf
+      - id: forbid-tabs
+      - id: remove-tabs
+        args: [--whitespaces-count, '2']  # defaults to: 4
+      - id: chmod
+        args: ['644']
+        files: \.md$
+      - id: insert-license
+        files: \.groovy$
+        args:
+          - --license-filepath
+          - src/license_header.txt        # defaults to: LICENSE.txt
+          - --comment-style
+          - //                            # defaults to:  #
+          - --use-current-year
+          - --no-extra-eol                # see below
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 3.0.0  # or specific git tag
+    hooks:
+      - id: check-mailmap
+      - id: forbid-binary
+      - id: git-check  # Configure in .gitattributes
+      - id: git-dirty  # Configure in .gitignore
+      - id: script-must-have-extension
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: 'v0.19.1' # Fill in a tag / sha here (e.g. v0.19.1)
+    hooks:
+      - id: gitlint
+  - repo: local
+    hooks:
+      - id: forbid-unicode-non-breaking-spaces
+        name: Detect unicode non-breaking space character U+00A0 aka M-BM-
+        language: system
+        entry: perl -ne 'print if $m = /\xc2\xa0/; $t ||= $m; END{{exit $t}}'
+        files: ''
+      - id: remove-unicode-non-breaking-spaces
+        name: Remove unicode non-breaking space character U+00A0 aka M-BM-
+        language: system
+        entry: perl -pi* -e 's/\xc2\xa0/ /g && ($t = 1) && print STDERR $_; END{{exit
+          $t}}'
+        files: ''
+      - id: forbid-en-dashes
+        name: Detect the EXTREMELY confusing unicode character U+2013
+        language: system
+        entry: perl -ne 'print if $m = /\xe2\x80\x93/; $t ||= $m; END{{exit $t}}'
+        files: ''
+      - id: css-forbid-px
+        name: In CSS files, use rem or % over px
+        language: pygrep
+        entry: px
+        files: \.css$
+      - id: ot-sanitize-fonts
+        name: Calling ot-sanitise on otf/ttf/woff/woff2 font files
+        language: system
+        entry: sh -c 'type ot-sanitise >/dev/null
+          && for font in "$@";
+          do echo "$font";
+          ot-sanitise "$font"; done
+          || echo "WARNING Command ot-sanitise not found - skipping check"'
+        files: \.(otf|ttf|woff|woff2)$
+      - id: detect-secrets
+        name: Detect secrets
+        language: python
+        entry: detect-secrets-hook
+        args: ['--baseline', '.secrets.baseline']
