@@ -1,10 +1,7 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
-            // This is the same execution as the ansible-community/ansible-lint GitHub Action
             "label": "ansible-lint",
             "type": "shell",
             "command": "docker run -it --rm -v ${PWD}:/workspace quay.io/ansible/creator-ee:v0.4.1 /usr/local/bin/ansible-lint -vvv /workspace",
@@ -38,7 +35,7 @@
                   ]
             },
             "group": {
-                "kind": "build",
+                "kind": "build"
             }
         },
         {
@@ -60,7 +57,7 @@
                   ]
             },
             "group": {
-                "kind": "build",
+                "kind": "build"
             }
         }
     ]

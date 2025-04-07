@@ -1,0 +1,18 @@
+---
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  upload-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: mkdir -p dist/release
+      - run: touch dist/release/NOASSETS
+      - uses: https://code.forgejo.org/actions/forgejo-release@a6e3fdb19e717c1541300e0db39f14f22d03fa19 # v2.6.0
+        with:
+          direction: upload
+          url: https://git.zyria.de
+          token: ${{ secrets.ZYRIA_TOKEN }}
