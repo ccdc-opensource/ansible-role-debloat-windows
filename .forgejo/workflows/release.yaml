@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: mkdir -p dist/release
       - run: touch dist/release/NOASSETS
-      - uses: https://code.forgejo.org/actions/forgejo-release@73ed2a76a27e2b2c697830654557476dcbfeaae0 # v2.5.3
+      - uses: https://code.forgejo.org/actions/forgejo-release@a6e3fdb19e717c1541300e0db39f14f22d03fa19 # v2.6.0
         with:
           direction: upload
           url: https://git.zyria.de
