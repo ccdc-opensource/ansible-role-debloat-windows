@@ -3,10 +3,4 @@
   "extends": [
     "local>pyrox/renovate-config:default.json5"
   ],
-  "packageRules": [
-    {
-      "matchPackageNames": ["https://code.forgejo.org/actions/forgejo-release"],
-      "enabled": false
-    }
-  ],
 }
