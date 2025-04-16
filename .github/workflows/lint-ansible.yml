@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Check GitHub event type to determine reporter type
         run: |
@@ -20,7 +20,7 @@ jobs:
           fi
 
       - name: Run ansible-lint
-        uses: reviewdog/action-ansiblelint@v1
+        uses: reviewdog/action-ansiblelint@5b8ca4b12dcbcdf63d4739dacd90609abafe8924 # v1
         with:
           fail_on_error: false
           filter_mode: diff_context

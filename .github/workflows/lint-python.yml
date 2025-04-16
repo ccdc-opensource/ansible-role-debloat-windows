@@ -15,7 +15,7 @@ jobs:
         python_version: ["3.9"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
 
@@ -33,12 +33,12 @@ jobs:
           fi
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@3605726ffa6ef7750b99ff496e5b88248b414e26 # v4
         with:
           python-version: ${{ matrix.python_version }}
 
       - name: Lint Python
-        uses: reviewdog/action-flake8@v3
+        uses: reviewdog/action-flake8@b65981e158319f08cb7d0132f28bc0081e110adc # v3
         with:
           fail_on_error: false
           filter_mode: diff_context

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
 
       - name: Determine reporter type
         run: |
@@ -20,7 +20,7 @@ jobs:
           fi
 
       - name: Run ansible-lint
-        uses: reviewdog/action-ansiblelint@v1
+        uses: reviewdog/action-ansiblelint@5b8ca4b12dcbcdf63d4739dacd90609abafe8924 # v1
         with:
           fail_on_error: true
           filter_mode: nofilter
@@ -28,7 +28,7 @@ jobs:
           reporter: ${{ env.REVIEWDOG_REPORTER }}
 
       - name: Run yamllint
-        uses: reviewdog/action-yamllint@v1
+        uses: reviewdog/action-yamllint@f01d8a48fd8d89f89895499fca2cff09f9e9e8c0 # v1
         with:
           fail_on_error: true
           filter_mode: nofilter
@@ -36,7 +36,7 @@ jobs:
           reporter: ${{ env.REVIEWDOG_REPORTER }}
 
       - name: Run markdownlint
-        uses: reviewdog/action-markdownlint@v0
+        uses: reviewdog/action-markdownlint@3667398db9118d7e78f7a63d10e26ce454ba5f58 # v0
         with:
           fail_on_error: true
           filter_mode: nofilter
