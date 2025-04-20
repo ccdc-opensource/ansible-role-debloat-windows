@@ -11,7 +11,7 @@ jobs:
   to_github:
     runs-on: ubuntu-latest
     steps:                                              # <-- must use actions/checkout before mirroring!
-    - uses: https://github.com/actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+    - uses: https://github.com/actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       with:
         fetch-depth: 0
     - uses: https://github.com/pixta-dev/repository-mirroring-action@674e65a7d483ca28dafaacba0d07351bdcc8bd75 # v1
