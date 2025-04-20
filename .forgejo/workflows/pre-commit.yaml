@@ -14,4 +14,4 @@ jobs:
       - uses: https://code.forgejo.org/actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
       - name: Install detect-secret
         run: pip install detect-secrets
-      - uses: https://github.com/pre-commit/action@v3.0.1
+      - uses: https://github.com/pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
