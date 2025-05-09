@@ -1,9 +1,63 @@
----
+# Dependabot version updates
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates
+
 version: 2
+registries:
+  nuget-github:
+    type: nuget-feed
+    url: https://nuget.pkg.github.com/ccdc-confidential/index.json
+    username: ${{ secrets.CCDC_GITHUB_NUGET_FEED_USER }}
+    password: ${{ secrets.CCDC_GITHUB_NUGET_FEED_PAT }}
+  nuget-public:
+    type: nuget-feed
+    url: https://api.nuget.org/v3/index.json
+
+  npm-github:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    username: ${{ secrets.CCDC_GITHUB_NUGET_FEED_USER }}
+    password: ${{ secrets.CCDC_GITHUB_NUGET_FEED_PAT }}
+  npm-public:
+    type: npm-registry
+    url: https://registry.npmjs.org
+
 updates:
-  - package-ecosystem: "github-actions"
+  # Enable version updates for NuGet
+  - package-ecosystem: "nuget"
+    registries: "*"
+    # Look for `*.csproj` or `*.sln` files in the `root` directory
     directory: "/"
+    # Check the NuGet registry for updates every day (weekdays)
     schedule:
       interval: "daily"
+      time: "15:30"
+      timezone: "Europe/London"
     commit-message:
-      prefix: "(NO_JIRA)"
+      # Prefix all commit messages with "NO_JIRA"
+      prefix: "NO_JIRA"
+
+  # Enable version updates for NPM
+  - package-ecosystem: "npm"
+    registries: "*"
+    # Look for `package.json` or `package.lock` files in the `root` directory
+    directory: "/"
+    # Check the NPM registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+      time: "15:30"
+      timezone: "Europe/London"
+    commit-message:
+      # Prefix all commit messages with "NO_JIRA"
+      prefix: "NO_JIRA"
+
+# Enable version update for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    # Check GitHub Actions for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+      time: "15:30"
+      timezone: "Europe/London"
+    commit-message:
+      # Prefix all commit messages with "NO_JIRA"
+      prefix: "NO_JIRA"
