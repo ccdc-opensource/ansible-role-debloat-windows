@@ -1,4 +1,6 @@
 ---
+# Generic info
+use_become: true
 # Disable Telemetry
 disable_telemetry_policy: true
 disable_telemetry_dnsblock: true
