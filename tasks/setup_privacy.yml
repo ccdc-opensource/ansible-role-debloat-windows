@@ -1,5 +1,4 @@
 ---
-
 - name: "Disable Windows Search web results"
   when: disable_search_web_results
   ansible.windows.win_powershell:
