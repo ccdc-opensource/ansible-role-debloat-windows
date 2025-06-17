@@ -2,8 +2,7 @@
 
 - name: "Disable Windows Search web results"
   when: disable_search_web_results
-  ansible.windows.win_shell: Set-WindowsSearchSetting -EnableWebResultsSetting $false
-  become: true
+  ansible.windows.win_command: Set-WindowsSearchSetting -EnableWebResultsSetting $false
 
 - name: Disable web language list access
   when: disable_web_language_list_access
