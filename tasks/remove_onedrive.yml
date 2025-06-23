@@ -5,7 +5,7 @@
     Stop-Process -Name "OneDrive" -Force
     Stop-Process -Name "explorer" -Force
   ignore_errors: true
-  
+
 - name: Find OneDrive installer
   when: remove_onedrive
   ansible.windows.win_find:
