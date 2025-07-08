@@ -1,7 +1,7 @@
 ---
 - name: Disable telemetry
   ansible.builtin.include_tasks: disable_telemetry.yml
-
+  tags: telemetry
 # We need to call this role in a loop externally as otherwise it will fail for
 # any services that happen not to exist on the target system
 - name: Disable unnecessary services
@@ -9,18 +9,25 @@
   vars:
     service: "{{ item }}"
   with_items: "{{ disable_services }}"
-
+  tags: disable_services
 - name: Disable Windows Defender
   ansible.builtin.include_tasks: disable_windows_defender.yml
+  tags: defender
 - name: Privacy hardening
   ansible.builtin.include_tasks: setup_privacy.yml
+  tags: privacy
 - name: UI setup
   ansible.builtin.include_tasks: setup_ui.yml
+  tags: ui
 - name: Set up Windows Update
   ansible.builtin.include_tasks: setup_windows_update.yml
+  tags: updates
 - name: Remove default apps
   ansible.builtin.include_tasks: remove_default_apps.yml
+  tags: default_apps
 - name: Remove OneDrive
   ansible.builtin.include_tasks: remove_onedrive.yml
+  tags: onedrive
 - name: Disable Hibernation
   ansible.builtin.include_tasks: disable_hibernation.yml
+  tags: hibernation

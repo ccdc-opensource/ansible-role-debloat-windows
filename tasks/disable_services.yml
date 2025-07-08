@@ -10,4 +10,4 @@
     state: stopped
     start_mode: disabled
   when: service_info.exists
-  become: true
+  become: "{{ use_become | default(true) }}"
