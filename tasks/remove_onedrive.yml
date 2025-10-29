@@ -22,8 +22,9 @@
   loop_control:
     loop_var: installer
 
+# this step requires elevated privileges
 - name: Remove leftover directories
-  when: remove_onedrive
+  when: remove_onedrive and use_become | bool
   ansible.windows.win_file:
     path: "{{ directory }}"
     state: absent
@@ -34,6 +35,7 @@
     - "{{ ansible_env.USERPROFILE }}\\OneDrive"
   loop_control:
     loop_var: directory
+  become: true
 
 - name: Disable OneDrive via group policies
   when: remove_onedrive
