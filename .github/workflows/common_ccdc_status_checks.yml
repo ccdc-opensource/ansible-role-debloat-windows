@@ -23,6 +23,6 @@ jobs:
           git log --format=%B -n 1 ${{ github.event.after }} >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
       - name: Check pull request files with commit hook action
-        uses: ccdc-opensource/commit-hooks@main
+        uses: ccdc-opensource/commit-hooks@b79871b615928d8dd5adc5c26909f91a5d0cdacd # main
         with:
           commitMessage: ${{ env.commit_message }}
